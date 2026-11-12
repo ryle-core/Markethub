@@ -17,7 +17,7 @@ import com.ryle.markethub.ui.screens.onboarding.Onboardingscreen3
 fun AppNavHost(
     modifier: Modifier = Modifier,
     navController: NavHostController = rememberNavController(),
-    startDestination: String = ROUT_HOME
+    startDestination: String = ROUT_ONBOARDING1
 ) {
 
     NavHost(
