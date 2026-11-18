@@ -9,6 +9,7 @@ import androidx.navigation.compose.rememberNavController
 import com.ryle.markethub.ui.screens.auth.Loginscreen
 import com.ryle.markethub.ui.screens.auth.Registerscreen
 import com.ryle.markethub.ui.screens.home.Homescreen
+import com.ryle.markethub.ui.screens.intent.intentscreen
 import com.ryle.markethub.ui.screens.onboarding.Onboardingscreen1
 import com.ryle.markethub.ui.screens.onboarding.Onboardingscreen2
 import com.ryle.markethub.ui.screens.onboarding.Onboardingscreen3
@@ -50,6 +51,12 @@ fun AppNavHost(
         composable(ROUT_ONBOARDING3) {
             Onboardingscreen3(navController)
         }
+        composable(ROUT_INTENT) {
+            intentscreen(navController)
+        }
+
+
+
 
 
 
@@ -66,4 +73,7 @@ fun AppNavHost(
 
 
     }
+
+
+
 }
