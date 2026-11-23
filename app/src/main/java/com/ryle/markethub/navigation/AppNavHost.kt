@@ -13,12 +13,14 @@ import com.ryle.markethub.ui.screens.intent.intentscreen
 import com.ryle.markethub.ui.screens.onboarding.Onboardingscreen1
 import com.ryle.markethub.ui.screens.onboarding.Onboardingscreen2
 import com.ryle.markethub.ui.screens.onboarding.Onboardingscreen3
+import com.ryle.markethub.ui.screens.scaffold.ScaffoldScreen
+import com.ryle.markethub.ui.screens.splash.SplashScreen
 
 @Composable
 fun AppNavHost(
     modifier: Modifier = Modifier,
     navController: NavHostController = rememberNavController(),
-    startDestination: String = ROUT_ONBOARDING1
+    startDestination: String = ROUT_SPLASH
 ) {
 
     NavHost(
@@ -26,13 +28,17 @@ fun AppNavHost(
         startDestination = startDestination,
         modifier = modifier
     ) {
+
+
         composable(ROUT_HOME) {
             Homescreen(navController)
         }
 
+
         composable(ROUT_LOGIN) {
             Loginscreen(navController)
         }
+
 
             composable(ROUT_REGISTER) {
                 Registerscreen(navController)
@@ -51,9 +57,27 @@ fun AppNavHost(
         composable(ROUT_ONBOARDING3) {
             Onboardingscreen3(navController)
         }
+
+
+
         composable(ROUT_INTENT) {
             intentscreen(navController)
         }
+
+
+
+
+        composable(ROUT_SPLASH) {
+            SplashScreen(navController)
+        }
+
+
+        composable(ROUT_SCAFFOLD) {
+            ScaffoldScreen(navController)
+        }
+
+
+
 
 
 
