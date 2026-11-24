@@ -36,7 +36,9 @@ import androidx.compose.ui.unit.dp
 import androidx.core.net.toUri
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import com.ryle.markethub.navigation.ROUT_INTENT
 import com.ryle.markethub.navigation.ROUT_ONBOARDING2
+import com.ryle.markethub.navigation.ROUT_REGISTER
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -70,7 +72,7 @@ fun intentscreen(navController: NavController){
 
                 }
 
-                IconButton(onClick = {}) {
+                IconButton(onClick = {navController.navigate(ROUT_REGISTER)}) {
 
                     Icon(imageVector = Icons.Default.Notifications, contentDescription ="notification icon" )
 
@@ -196,7 +198,6 @@ fun intentscreen(navController: NavController){
 
         Button(
             onClick = {
-
 
                 val cameraIntent=Intent(MediaStore.ACTION_IMAGE_CAPTURE)
                 if (cameraIntent.resolveActivity(mContext.packageManager)!=null){

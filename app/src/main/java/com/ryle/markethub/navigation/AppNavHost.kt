@@ -8,6 +8,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.ryle.markethub.ui.screens.auth.Loginscreen
 import com.ryle.markethub.ui.screens.auth.Registerscreen
+import com.ryle.markethub.ui.screens.home.HomeScreen2
 import com.ryle.markethub.ui.screens.home.Homescreen
 import com.ryle.markethub.ui.screens.intent.intentscreen
 import com.ryle.markethub.ui.screens.onboarding.Onboardingscreen1
@@ -74,6 +75,11 @@ fun AppNavHost(
 
         composable(ROUT_SCAFFOLD) {
             ScaffoldScreen(navController)
+        }
+
+
+        composable(ROUT_HOMESCREEN2) {
+            HomeScreen2(navController)
         }
 
 

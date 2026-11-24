@@ -9,3 +9,6 @@ const val  ROUT_ONBOARDING3 = "onboarding3"
 const val  ROUT_INTENT = "intent"
 const val  ROUT_SPLASH = "splash"
 const val  ROUT_SCAFFOLD = "scaffold"
+
+const val  ROUT_HOMESCREEN2 = "homescreen2"
+
