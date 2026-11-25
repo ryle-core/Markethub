@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "801213519079",
+    "project_id": "markethub-d9da9",
+    "storage_bucket": "markethub-d9da9.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:801213519079:android:4e5c2a1614251d43903e42",
+        "android_client_info": {
+          "package_name": "com.ryle.markethub"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDcUgl1R0og_gr3Gj-ILR2hYeojX_QIGjY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

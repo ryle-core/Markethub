@@ -57,7 +57,7 @@ fun Registerscreen(navController: NavController){
 
         Image(
 
-            painter = painterResource(com.ryle.markethub.R.drawable.delivery),
+            painter = painterResource(com.ryle.markethub.R.drawable.img_5),
             contentDescription = "this is a product",
             modifier = Modifier.height(200.dp).width(200.dp)
 
