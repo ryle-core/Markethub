@@ -29,6 +29,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
@@ -39,6 +40,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import com.ryle.markethub.R
+import com.ryle.markethub.data.AuthViewModel
 import com.ryle.markethub.navigation.ROUT_ONBOARDING2
 
 @Composable
@@ -57,7 +60,7 @@ fun Registerscreen(navController: NavController){
 
         Image(
 
-            painter = painterResource(com.ryle.markethub.R.drawable.img_5),
+            painter = painterResource(R.drawable.img),
             contentDescription = "this is a product",
             modifier = Modifier.height(200.dp).width(200.dp)
 
@@ -163,9 +166,14 @@ fun Registerscreen(navController: NavController){
         )
 
         Spacer(modifier = Modifier.height(20.dp))
-
+        val context = LocalContext.current
+        val authViewModel = AuthViewModel(navController, context)
         Button(
-            onClick = {},
+            onClick = {
+
+                authViewModel.signup(username, email, password,confirmpassword)
+
+            },
             colors = ButtonDefaults.buttonColors(Color.Blue),
             shape = RoundedCornerShape(10.dp),
             modifier = Modifier.width(250.dp)

@@ -22,8 +22,11 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+
 import androidx.navigation.compose.rememberNavController
+import com.ryle.markethub.R
 import com.ryle.markethub.navigation.ROUT_HOME
+import com.ryle.markethub.navigation.ROUT_REGISTER
 
 @Composable
 //UI
@@ -37,7 +40,7 @@ fun Onboardingscreen2(navController: NavController){
 
         Image(
 
-            painter = painterResource(com.ryle.markethub.R.drawable.delivery),
+            painter = painterResource(R.drawable.img),
             contentDescription = "this is a product",
             modifier = Modifier.height(200.dp).width(200.dp)
 
@@ -64,7 +67,7 @@ fun Onboardingscreen2(navController: NavController){
         Spacer(modifier = Modifier.height(10.dp))
 
         Button(
-            onClick = {navController.navigate(ROUT_HOME)},
+            onClick = {navController.navigate(ROUT_REGISTER)},
             colors = ButtonDefaults.buttonColors(Color.Blue),
             shape = RoundedCornerShape(10.dp),
             modifier = Modifier.width(250.dp)

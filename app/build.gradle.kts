@@ -36,7 +36,9 @@ android {
     }
 }
 
+
 dependencies {
+    // Jetpack Compose
     implementation(platform(libs.androidx.compose.bom))
     implementation(libs.androidx.activity.compose)
     implementation(libs.androidx.compose.material3)
@@ -45,22 +47,27 @@ dependencies {
     implementation(libs.androidx.compose.ui.tooling.preview)
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
+
+    // Firebase
+    implementation(platform("com.google.firebase:firebase-bom:35.2.0"))
+    implementation(libs.firebase.auth)
     implementation(libs.firebase.database)
+
+    // Navigation
+    implementation("androidx.navigation:navigation-runtime-ktx:2.10.2")
+    implementation("androidx.navigation:navigation-compose:2.10.2")
+
+    // Icons
+    implementation("androidx.compose.material:material-icons-core:1.7.8")
+
+    // Testing
     testImplementation(libs.junit)
     androidTestImplementation(platform(libs.androidx.compose.bom))
     androidTestImplementation(libs.androidx.compose.ui.test.junit4)
     androidTestImplementation(libs.androidx.espresso.core)
     androidTestImplementation(libs.androidx.junit)
+
+    // Debug
     debugImplementation(libs.androidx.compose.ui.test.manifest)
     debugImplementation(libs.androidx.compose.ui.tooling)
-
-    //navigation
-    implementation("androidx.navigation:navigation-runtime-ktx:2.10.2")
-    implementation("androidx.navigation:navigation-compose:2.10.2")
-
-    //Icons
-    implementation("androidx.compose.material:material-icons-core:1.7.8")
-
-
-
 }
