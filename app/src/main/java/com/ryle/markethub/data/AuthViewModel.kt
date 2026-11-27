@@ -12,6 +12,8 @@ import com.ryle.markethub.models.User
 import com.ryle.markethub.navigation.ROUT_HOME
 import com.ryle.markethub.navigation.ROUT_INTENT
 import com.ryle.markethub.navigation.ROUT_REGISTER
+import com.ryle.markethub.navigation.ROUT_UPLOAD_ORDER
+import com.ryle.markethub.navigation.ROUT_VIEW_ORDER
 
 class AuthViewModel(
     private val navController: NavController,
@@ -20,44 +22,15 @@ class AuthViewModel(
 
     private val mAuth: FirebaseAuth = FirebaseAuth.getInstance()
 
-    // Use your actual Firebase Realtime Database URL.
-    private val database: FirebaseDatabase =
+    // Replace this with your actual Firebase Realtime Database URL.
+    private val database: FirebaseDatabase by lazy {
         FirebaseDatabase.getInstance(
-            "YOUR_REALTIME_DATABASE_URL"
+            "https://markethub-d9da9-default-rtdb.firebaseio.com/"
         )
+    }
 
     companion object {
         private const val TAG = "MARKETHUB_AUTH"
-    }
-
-    // CHECK FIREBASE CONNECTION
-    fun testFirebaseConnection() {
-
-        Log.d(TAG, "PROJECT ID: ${mAuth.app.options.projectId}")
-        Log.d(TAG, "APP ID: ${mAuth.app.options.applicationId}")
-
-        database.reference.child("ConnectionTest")
-            .setValue("Connected")
-            .addOnSuccessListener {
-
-                Log.d(TAG, "DATABASE CONNECTION SUCCESSFUL")
-
-                Toast.makeText(
-                    context,
-                    "Firebase Connected Successfully!",
-                    Toast.LENGTH_LONG
-                ).show()
-            }
-            .addOnFailureListener { error ->
-
-                Log.e(TAG, "DATABASE CONNECTION FAILED", error)
-
-                Toast.makeText(
-                    context,
-                    "Database Error: ${error.message}",
-                    Toast.LENGTH_LONG
-                ).show()
-            }
     }
 
     // REGISTER USER
@@ -68,9 +41,13 @@ class AuthViewModel(
         confirmpassword: String
     ) {
 
+        val cleanUsername = username.trim()
+        val cleanEmail = email.trim()
+
+        // Validate fields
         if (
-            username.isBlank() ||
-            email.isBlank() ||
+            cleanUsername.isBlank() ||
+            cleanEmail.isBlank() ||
             password.isBlank() ||
             confirmpassword.isBlank()
         ) {
@@ -82,8 +59,28 @@ class AuthViewModel(
             return
         }
 
-        if (password != confirmpassword) {
+        // Validate email
+        if (!android.util.Patterns.EMAIL_ADDRESS.matcher(cleanEmail).matches()) {
+            Toast.makeText(
+                context,
+                "Enter a valid email address",
+                Toast.LENGTH_LONG
+            ).show()
+            return
+        }
 
+        // Validate password
+        if (password.length < 6) {
+            Toast.makeText(
+                context,
+                "Password must contain at least 6 characters",
+                Toast.LENGTH_LONG
+            ).show()
+            return
+        }
+
+        // Confirm password
+        if (password != confirmpassword) {
             Toast.makeText(
                 context,
                 "Passwords do not match",
@@ -92,21 +89,21 @@ class AuthViewModel(
             return
         }
 
-        Log.d(TAG, "STARTING REGISTRATION")
-        Log.d(TAG, "PROJECT ID: ${mAuth.app.options.projectId}")
+        Log.d(TAG, "Starting registration")
 
+        // Firebase Authentication
         mAuth.createUserWithEmailAndPassword(
-            email.trim(),
+            cleanEmail,
             password
         ).addOnCompleteListener { task ->
 
             if (!task.isSuccessful) {
 
-                Log.e(TAG, "AUTHENTICATION FAILED", task.exception)
+                Log.e(TAG, "Registration failed", task.exception)
 
                 Toast.makeText(
                     context,
-                    "Registration Failed: ${task.exception?.message}",
+                    "Registration failed: ${task.exception?.localizedMessage}",
                     Toast.LENGTH_LONG
                 ).show()
 
@@ -117,60 +114,58 @@ class AuthViewModel(
 
             if (firebaseUser == null) {
 
-                Log.e(TAG, "FIREBASE USER IS NULL")
+                Log.e(TAG, "Firebase user is null")
+
+                Toast.makeText(
+                    context,
+                    "Unable to retrieve registered user",
+                    Toast.LENGTH_LONG
+                ).show()
+
                 return@addOnCompleteListener
             }
 
             val uid = firebaseUser.uid
 
-            Log.d(TAG, "AUTHENTICATION SUCCESSFUL")
-            Log.d(TAG, "USER UID: $uid")
-            Log.d(TAG, "USER EMAIL: ${firebaseUser.email}")
+            Log.d(TAG, "Authentication successful: $uid")
 
-            // CREATE USER PROFILE
+            // Create user profile
             val userdata = User(
-                username = username.trim(),
-                email = email.trim(),
+                username = cleanUsername,
+                email = cleanEmail,
                 uid = uid,
                 role = "user"
             )
 
-            // SAVE PROFILE TO REALTIME DATABASE
+            // Save user to Firebase Realtime Database
             database.getReference("Users")
                 .child(uid)
                 .setValue(userdata)
-                .addOnCompleteListener { dbTask ->
+                .addOnSuccessListener {
 
-                    if (dbTask.isSuccessful) {
+                    Log.d(TAG, "User profile saved successfully")
 
-                        Log.d(TAG, "USER PROFILE SAVED SUCCESSFULLY")
+                    Toast.makeText(
+                        context,
+                        "Registration successful!",
+                        Toast.LENGTH_LONG
+                    ).show()
 
-                        Toast.makeText(
-                            context,
-                            "Registration Successful!",
-                            Toast.LENGTH_LONG
-                        ).show()
-
-                        navController.navigate(ROUT_HOME) {
-                            popUpTo(ROUT_REGISTER) {
-                                inclusive = true
-                            }
+                    navController.navigate(ROUT_HOME) {
+                        popUpTo(ROUT_REGISTER) {
+                            inclusive = true
                         }
-
-                    } else {
-
-                        Log.e(
-                            TAG,
-                            "USER PROFILE SAVE FAILED",
-                            dbTask.exception
-                        )
-
-                        Toast.makeText(
-                            context,
-                            "Account created, but profile saving failed: ${dbTask.exception?.message}",
-                            Toast.LENGTH_LONG
-                        ).show()
                     }
+                }
+                .addOnFailureListener { error ->
+
+                    Log.e(TAG, "Database saving failed", error)
+
+                    Toast.makeText(
+                        context,
+                        "Account created, but profile saving failed: ${error.localizedMessage}",
+                        Toast.LENGTH_LONG
+                    ).show()
                 }
         }
     }
@@ -178,7 +173,9 @@ class AuthViewModel(
     // LOGIN USER
     fun login(email: String, password: String) {
 
-        if (email.isBlank() || password.isBlank()) {
+        val cleanEmail = email.trim()
+
+        if (cleanEmail.isBlank() || password.isBlank()) {
 
             Toast.makeText(
                 context,
@@ -190,7 +187,7 @@ class AuthViewModel(
         }
 
         mAuth.signInWithEmailAndPassword(
-            email.trim(),
+            cleanEmail,
             password
         ).addOnCompleteListener { task ->
 
@@ -199,7 +196,7 @@ class AuthViewModel(
                 val uid = task.result.user?.uid
 
                 if (uid == null) {
-                    Log.e(TAG, "LOGIN UID IS NULL")
+                    Log.e(TAG, "Login UID is null")
                     return@addOnCompleteListener
                 }
 
@@ -210,11 +207,9 @@ class AuthViewModel(
 
                         if (!snapshot.exists()) {
 
-                            Log.e(TAG, "USER PROFILE NOT FOUND")
-
                             Toast.makeText(
                                 context,
-                                "User profile not found in database",
+                                "User profile not found",
                                 Toast.LENGTH_LONG
                             ).show()
 
@@ -226,37 +221,34 @@ class AuthViewModel(
 
                         Toast.makeText(
                             context,
-                            "Login Successful",
+                            "Login successful",
                             Toast.LENGTH_SHORT
                         ).show()
 
                         if (role == "admin") {
-
-                            navController.navigate(ROUT_INTENT)
-
+                            navController.navigate(ROUT_VIEW_ORDER)
                         } else {
-
-                            navController.navigate(ROUT_HOME)
+                            navController.navigate(ROUT_UPLOAD_ORDER)
                         }
                     }
                     .addOnFailureListener { error ->
 
-                        Log.e(TAG, "USER FETCH FAILED", error)
+                        Log.e(TAG, "Database fetch failed", error)
 
                         Toast.makeText(
                             context,
-                            "Database Error: ${error.message}",
+                            "Database error: ${error.localizedMessage}",
                             Toast.LENGTH_LONG
                         ).show()
                     }
 
             } else {
 
-                Log.e(TAG, "LOGIN FAILED", task.exception)
+                Log.e(TAG, "Login failed", task.exception)
 
                 Toast.makeText(
                     context,
-                    "Login Failed: ${task.exception?.message}",
+                    "Login failed: ${task.exception?.localizedMessage}",
                     Toast.LENGTH_LONG
                 ).show()
             }

@@ -1,35 +1,22 @@
+
 package com.ryle.markethub.ui.screens.auth
 
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Done
 import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.filled.Person
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.Icon
-import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.OutlinedTextFieldDefaults
-import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
@@ -41,38 +28,36 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.ryle.markethub.R
-import com.ryle.markethub.data.AuthViewModel
-import com.ryle.markethub.navigation.ROUT_ONBOARDING2
+import com.ryle.markethub.navigation.ROUT_LOGIN
 
 @Composable
-fun Registerscreen(navController: NavController){
+fun Registerscreen(
 
+    onRegister: (String, String, String, String) -> Unit, navController: NavController
+) {
     var username by remember { mutableStateOf("") }
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     var confirmpassword by remember { mutableStateOf("") }
+    var errorMessage by remember { mutableStateOf("") }
 
     Column(
-        modifier = Modifier.fillMaxSize(),
+        modifier = Modifier
+            .fillMaxSize()
+            .verticalScroll(rememberScrollState())
+            .padding(16.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
-
         Image(
-
-            painter = painterResource(R.drawable.img),
-            contentDescription = "this is a product",
-            modifier = Modifier.height(200.dp).width(200.dp)
-
-
+            painter = painterResource(id = R.drawable.img),
+            contentDescription = "Product image",
+            modifier = Modifier.size(200.dp)
         )
 
         Spacer(modifier = Modifier.height(20.dp))
 
-
-
         Text(
-
             text = "Join us and start your journey",
             color = Color.Blue,
             fontSize = 30.sp,
@@ -82,146 +67,144 @@ fun Registerscreen(navController: NavController){
 
         Spacer(modifier = Modifier.height(20.dp))
 
-
-        //username
         OutlinedTextField(
             value = username,
-            onValueChange = { username = it},
-            modifier = Modifier.width(350.dp),
-            leadingIcon = { Icon(imageVector = Icons.Default.Person, contentDescription = "") },
-            label = { Text(text = "Username") },
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
-            colors = OutlinedTextFieldDefaults.colors(
-                unfocusedTextColor = Color.Blue,
-                unfocusedLabelColor = Color.Black,
-                unfocusedLeadingIconColor = Color.Blue,
-                focusedBorderColor = Color.Black
-
-
-            )
-
+            onValueChange = {
+                username = it
+                errorMessage = ""
+            },
+            modifier = Modifier.fillMaxWidth(),
+            leadingIcon = {
+                Icon(Icons.Default.Person, contentDescription = "Username")
+            },
+            label = { Text("Username") },
+            singleLine = true
         )
 
-        Spacer(modifier = Modifier.height(20.dp))
-
+        Spacer(modifier = Modifier.height(16.dp))
 
         OutlinedTextField(
             value = email,
-            onValueChange = { email = it},
-            modifier = Modifier.width(350.dp),
-            leadingIcon = { Icon(imageVector = Icons.Default.Email, contentDescription = "") },
-            label = { Text(text = "email") },
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
-            colors = OutlinedTextFieldDefaults.colors(
-                unfocusedTextColor = Color.Blue,
-                unfocusedLabelColor = Color.Black,
-                unfocusedLeadingIconColor = Color.Blue,
-                focusedBorderColor = Color.Black
-
-
-            )
-
+            onValueChange = {
+                email = it
+                errorMessage = ""
+            },
+            modifier = Modifier.fillMaxWidth(),
+            leadingIcon = {
+                Icon(Icons.Default.Email, contentDescription = "Email")
+            },
+            label = { Text("Email") },
+            keyboardOptions = KeyboardOptions(
+                keyboardType = KeyboardType.Email
+            ),
+            singleLine = true
         )
 
-        Spacer(modifier = Modifier.height(20.dp))
+        Spacer(modifier = Modifier.height(16.dp))
 
         OutlinedTextField(
             value = password,
-            onValueChange = { password = it},
-            modifier = Modifier.width(350.dp),
-            leadingIcon = { Icon(imageVector = Icons.Default.Lock, contentDescription = "") },
-            label = { Text(text = "password") },
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
-            colors = OutlinedTextFieldDefaults.colors(
-                unfocusedTextColor = Color.Blue,
-                unfocusedLabelColor = Color.Black,
-                unfocusedLeadingIconColor = Color.Blue,
-                focusedBorderColor = Color.Black
-
-
+            onValueChange = {
+                password = it
+                errorMessage = ""
+            },
+            modifier = Modifier.fillMaxWidth(),
+            leadingIcon = {
+                Icon(Icons.Default.Lock, contentDescription = "Password")
+            },
+            label = { Text("Password") },
+            visualTransformation = PasswordVisualTransformation(),
+            keyboardOptions = KeyboardOptions(
+                keyboardType = KeyboardType.Password
             ),
-            visualTransformation = PasswordVisualTransformation()
-
+            singleLine = true
         )
 
-        Spacer(modifier = Modifier.height(20.dp))
+        Spacer(modifier = Modifier.height(16.dp))
 
         OutlinedTextField(
             value = confirmpassword,
-            onValueChange = { confirmpassword = it},
-            modifier = Modifier.width(350.dp),
-            leadingIcon = { Icon(imageVector = Icons.Default.Done, contentDescription = "") },
-            label = { Text(text = "confirmpassword") },
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
-            colors = OutlinedTextFieldDefaults.colors(
-                unfocusedTextColor = Color.Blue,
-                unfocusedLabelColor = Color.Black,
-                unfocusedLeadingIconColor = Color.Blue,
-                focusedBorderColor = Color.Black
-
-
+            onValueChange = {
+                confirmpassword = it
+                errorMessage = ""
+            },
+            modifier = Modifier.fillMaxWidth(),
+            leadingIcon = {
+                Icon(Icons.Default.Done, contentDescription = "Confirm password")
+            },
+            label = { Text("Confirm Password") },
+            visualTransformation = PasswordVisualTransformation(),
+            keyboardOptions = KeyboardOptions(
+                keyboardType = KeyboardType.Password
             ),
-            visualTransformation = PasswordVisualTransformation()
-
+            singleLine = true
         )
 
-        Spacer(modifier = Modifier.height(20.dp))
-        val context = LocalContext.current
-        val authViewModel = AuthViewModel(navController, context)
+        Spacer(modifier = Modifier.height(16.dp))
+
+        if (errorMessage.isNotEmpty()) {
+            Text(
+                text = errorMessage,
+                color = Color.Red,
+                textAlign = TextAlign.Center
+            )
+            Spacer(modifier = Modifier.height(8.dp))
+        }
+
         Button(
             onClick = {
+                errorMessage = when {
+                    username.isBlank() ->
+                        "Please enter your username"
 
-                authViewModel.signup(username, email, password,confirmpassword)
+                    email.isBlank() ||
+                            !android.util.Patterns.EMAIL_ADDRESS
+                                .matcher(email.trim()).matches() ->
+                        "Please enter a valid email address"
 
+                    password.isBlank() ->
+                        "Please enter your password"
+
+                    confirmpassword.isBlank() ->
+                        "Please confirm your password"
+
+                    password != confirmpassword ->
+                        "Passwords do not match"
+
+                    else -> ""
+                }
+
+                if (errorMessage.isEmpty()) {
+                    onRegister(
+                        username.trim(),
+                        email.trim(),
+                        password,
+                        confirmpassword
+                    )
+                }
             },
-            colors = ButtonDefaults.buttonColors(Color.Blue),
+            colors = ButtonDefaults.buttonColors(
+                containerColor = Color.Blue
+            ),
             shape = RoundedCornerShape(10.dp),
             modifier = Modifier.width(250.dp)
         ) {
-            Text(text = "Register")
-
+            Text("Register")
 
         }
 
+       TextButton(
+           onClick = { navController.navigate(ROUT_LOGIN)}
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+       ) {Text(text = "Already have an account?Login") }
 
     }
-
 }
 
 @Preview(showBackground = true)
 @Composable
 fun RegisterscreenPreview() {
-
-    Registerscreen(rememberNavController())
+    Registerscreen(
+        onRegister = { _, _, _, _ -> },rememberNavController()
+    )
 }

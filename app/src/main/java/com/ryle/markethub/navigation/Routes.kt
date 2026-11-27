@@ -12,3 +12,6 @@ const val  ROUT_SCAFFOLD = "scaffold"
 
 const val  ROUT_HOMESCREEN2 = "homescreen2"
 
+//order screen
+const val ROUT_UPLOAD_ORDER= "uploadorder"
+const val ROUT_VIEW_ORDER= "vieworder"
